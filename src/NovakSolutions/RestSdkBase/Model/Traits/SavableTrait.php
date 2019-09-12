@@ -9,17 +9,13 @@ namespace NovakSolutions\RestSdkBase\Model\Traits;
 
 trait SavableTrait
 {
-    public function save($reloadFromReturn = true){
+    public function save(){
         $serviceClassName = static::$serviceClassName;
         $primaryKeyFieldName = static::$primaryKeyFieldName;
-        if($this->$primaryKeyFieldName != null){
-            $serviceClassName::update($this->toArray());
+        if(static::$primaryKeyFieldName != null && $this->$primaryKeyFieldName != null){
+            $serviceClassName::update($this);
         } else {
-            $result = $serviceClassName::create($this->toArray());
-        }
-
-        if($reloadFromReturn) {
-            $this->fromArray($result->toArray());
+            $result = $serviceClassName::create($this);
         }
     }
 }

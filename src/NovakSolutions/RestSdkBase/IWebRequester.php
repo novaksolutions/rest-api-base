@@ -9,5 +9,11 @@
 namespace NovakSolutions\RestSdkBase;
 
 interface IWebRequester{
+    /**
+     * @param $endPoint
+     * @param $requestVerb
+     * @param $payload
+     * @return WebRequestResult
+     */
     public function request($endPoint, $requestVerb, $payload);
 }

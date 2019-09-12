@@ -2,10 +2,12 @@
   "name": "novaksolutions/rest-sdk-base",
   "type": "library",
   "description": "Base classes for simple rest sdks",
-  "version": "0.1",
+  "version": "0.2",
   "require": {
     "php": ">=7.1",
-    "ext-curl": "*"
+    "ext-curl": "*",
+    "netresearch/jsonmapper": "^1.4",
+    "ext-json": "*"
   },
   "autoload": {
     "psr-4": {

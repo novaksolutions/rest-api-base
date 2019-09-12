@@ -8,6 +8,7 @@
 
 namespace NovakSolutions\RestSdkBase\Service\Traits;
 
+use JsonMapper;
 use NovakSolutions\RestSdkBase\AssociativeArrayToApiModel;
 use NovakSolutions\RestSdkBase\Exception\FindException;
 use NovakSolutions\RestSdkBase\Exception\BadRequestException;
@@ -81,19 +82,20 @@ trait ListTrait
         }
 
         //Interperet Response
-        $response = json_decode($result->body, true);
-        $results = [];
+        $responseAsStdClassObjectTree = json_decode($result->body);
+        $jsonMapper = new JsonMapper();
+        $response = $jsonMapper->mapArray($responseAsStdClassObjectTree->results, [], static::$class);
 
-        if(static::$arrayKey != null){
-            $objects = $response[static::$arrayKey];
-        } else {
-            $objects = $response;
-        }
+//        if(static::$arrayKey != null){
+//            $objects = $response[static::$arrayKey];
+//        } else {
+//            $objects = $response;
+//        }
+//
+//        foreach($objects as $objectAsArray){
+//            $results[] = new static::$class($objectAsArray);
+//        }
 
-        foreach($objects as $objectAsArray){
-            $results[] = new static::$class($objectAsArray);
-        }
-
-        return $results;
+        return $response;
     }
 }

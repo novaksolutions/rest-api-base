@@ -11,12 +11,4 @@ namespace NovakSolutions\RestSdkBase\Exception;
 
 class UnAuthorizedException extends Exception
 {
-
-    /**
-     * UnAuthorizedException constructor.
-     * @param string $string
-     */
-    public function __construct($string)
-    {
-    }
 }

@@ -47,7 +47,7 @@ class WebRequesterRegistry
 
     /**
      * @param $key
-     * @return WebRequester
+     * @return IWebRequester
      * @throws \Exception
      */
     public static function getWebRequesterForKey($key){

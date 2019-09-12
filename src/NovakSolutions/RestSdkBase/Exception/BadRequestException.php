@@ -10,12 +10,4 @@ namespace NovakSolutions\RestSdkBase\Exception;
 
 class BadRequestException extends Exception
 {
-
-    /**
-     * BadRequestException constructor.
-     * @param string $string
-     */
-    public function __construct($string)
-    {
-    }
 }

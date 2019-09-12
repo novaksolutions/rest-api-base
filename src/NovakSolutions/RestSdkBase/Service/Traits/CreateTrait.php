@@ -15,6 +15,7 @@ use NovakSolutions\RestSdkBase\Exception\UnAuthorizedException;
 use NovakSolutions\RestSdkBase\Exception\UnknownResponseException;
 use NovakSolutions\RestSdkBase\Model\Model;
 use NovakSolutions\RestSdkBase\Registry;
+use NovakSolutions\RestSdkBase\WebRequesterRegistry;
 use NovakSolutions\RestSdkBase\WebRequestResult;
 
 trait CreateTrait
@@ -26,26 +27,29 @@ trait CreateTrait
      * @param null $limit
      * @param null $offset
      * @return Model[]
-     * @throws \NovakSolutions\Exception\FindException
      * @throws \ReflectionException
-     * @throws \NovakSolutions\Exception\RestException
+     * @throws \Exception
      */
 
-    public static function create(array $data, $accessToken = null){
+    public static function create(&$data, $reloadFromResponse = true, $key = null){
+        if($key == null){
+            $key = static::$webRequesterRegistryKeyPrefix . '-default';
+        }
         //Replace question mark(s) in url with criteria if it's present
         $url = static::$endPoint;
 
         //Make Call...
+        $mapper = new \JsonMapper();
         /** @var WebRequestResult $result */
-        $result = Registry::$WebRequester->request($url, 'POST', json_encode($data), $accessToken);
+
+        $jsonBody = json_encode($data, JSON_PRETTY_PRINT);
+        $result = WebRequesterRegistry::getWebRequesterForKey($key)->request($url, 'POST', $jsonBody);
 
         self::throwExceptionIfError($result);
 
         //Interperet Response
-        $data = json_decode($result->body, true);
-
-        $object = new static::$class($data);
-
-        return $object;
+        if($reloadFromResponse) {
+            $mapper->map(json_decode($result->body, false), $data);
+        }
     }
 }
