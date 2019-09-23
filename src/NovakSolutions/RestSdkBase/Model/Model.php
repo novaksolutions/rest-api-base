@@ -10,10 +10,13 @@ namespace NovakSolutions\RestSdkBase\Model;
 
 
 use NovakSolutions\RestSdkBase\Exception\InvalidFieldException;
+use NovakSolutions\RestSdkBase\Model\Traits\IgnoreIgnoreOnJsonSerialize;
+
 //use function PHPSTORM_META\type;
 
-class Model
+class Model implements \JsonSerializable
 {
+    use IgnoreIgnoreOnJsonSerialize;
     protected static $primaryKeyFieldName = 'id';
     protected static $serviceClassName = null;
 

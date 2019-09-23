@@ -8,38 +8,46 @@
 
 namespace NovakSolutions\RestSdkBase\Service\Traits;
 
-use NovakSolutions\RestSdkBase\AssociativeArrayToApiModel;
-use NovakSolutions\RestSdkBase\Exception\FindException;
+use JsonMapper;
+
 use NovakSolutions\RestSdkBase\Exception\BadRequestException;
 use NovakSolutions\RestSdkBase\Exception\UnAuthorizedException;
 use NovakSolutions\RestSdkBase\Exception\UnknownResponseException;
-use NovakSolutions\RestSdkBase\Model\Model;
-use NovakSolutions\RestSdkBase\Registry;
+use NovakSolutions\RestSdkBase\IWebRequester;
+use NovakSolutions\RestSdkBase\WebRequesterRegistry;
 use NovakSolutions\RestSdkBase\WebRequestResult;
 
 trait RetrieveTrait
 {
     /**
-     * @param array $criteria
-     * @param null $orderBy
-     * @param null $ascendingOrDescending
-     * @param null $limit
-     * @param null $offset
-     * @return Model[]
-     * @throws \NovakSolutions\Exception\FindException
-     * @throws \ReflectionException
+     * @param $id
+     * @param string $key
+     * @return object
+     * @throws BadRequestException
+     * @throws UnAuthorizedException
+     * @throws UnknownResponseException
+     * @throws \JsonMapper_Exception
+     * @throws \Exception
      */
 
-    public static function get($id){
+    public static function get($id, $key = 'default'){
         //Build Request
         $parameters = [];
 
-        //Replace question mark(s) in url with criteria if it's present
-        $url = static::$endPoint . '/' . $id;
+        //Replace question mark(s) in url with id if question mark is present
 
-        //Make Call...
+        if(strpos(static::$endPoint, "?") !== false){
+            $url = str_replace("?",  $id, static::$endPoint);
+        } else {
+            $url = static::$endPoint . '/' . $id;
+        }
+
+//Make Call...
+        /** @var IWebRequester $webRequester */
+        $webRequester = WebRequesterRegistry::getWebRequesterForKey(static::$webRequesterRegistryKeyPrefix . '-' . $key);
+
         /** @var WebRequestResult $result */
-        $result = Registry::$WebRequester->request($url, 'GET', $parameters, null);
+        $result = $webRequester->request($url, 'GET', $parameters);
 
         $objects = null;
         switch($result->responseCode){
@@ -57,10 +65,10 @@ trait RetrieveTrait
         }
 
         //Interperet Response
-        $objects = json_decode($result->body, true);
+        $responseAsStdClassObjectTree = json_decode($result->body);
+        $jsonMapper = new JsonMapper();
+        $response = $jsonMapper->map($responseAsStdClassObjectTree, new static::$class);
 
-        $result = new static::$class($objects);
-
-        return $result;
+        return $response;
     }
 }
