@@ -8,13 +8,12 @@
 
 namespace NovakSolutions\RestSdkBase\Service\Traits;
 
-use NovakSolutions\RestSdkBase\AssociativeArrayToApiModel;
 use NovakSolutions\RestSdkBase\Exception\FindException;
 use NovakSolutions\RestSdkBase\Exception\BadRequestException;
 use NovakSolutions\RestSdkBase\Exception\UnAuthorizedException;
 use NovakSolutions\RestSdkBase\Exception\UnknownResponseException;
 use NovakSolutions\RestSdkBase\Model\Model;
-use NovakSolutions\RestSdkBase\Registry;
+use NovakSolutions\RestSdkBase\WebRequesterRegistry;
 use NovakSolutions\RestSdkBase\WebRequestResult;
 
 trait ListTraitWithOrderBy
@@ -26,7 +25,7 @@ trait ListTraitWithOrderBy
      * @param null $limit
      * @param null $offset
      * @return Model[]
-     * @throws \NovakSolutions\Exception\FindException
+     * @throws FindException
      * @throws \ReflectionException
      */
 
@@ -62,7 +61,7 @@ trait ListTraitWithOrderBy
 
         //Make Call...
         /** @var WebRequestResult $result */
-        $result = Registry::$WebRequester->request(static::$endPoint, 'GET', $parameters, null);
+        $result = WebRequesterRegistry::getWebRequesterForKey("default")->request(static::$endPoint, 'GET', $parameters, null);
 
         $objects = null;
         switch($result->responseCode){

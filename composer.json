@@ -2,7 +2,7 @@
   "name": "novaksolutions/rest-sdk-base",
   "type": "library",
   "description": "Base classes for simple rest sdks",
-  "version": "0.3",
+  "version": "0.3.1",
   "require": {
     "php": ">=7.1",
     "ext-curl": "*",

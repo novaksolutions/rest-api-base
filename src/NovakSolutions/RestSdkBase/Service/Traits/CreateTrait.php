@@ -8,18 +8,13 @@
 
 namespace NovakSolutions\RestSdkBase\Service\Traits;
 
-use NovakSolutions\RestSdkBase\AssociativeArrayToApiModel;
-use NovakSolutions\RestSdkBase\Exception\FindException;
-use NovakSolutions\RestSdkBase\Exception\BadRequestException;
-use NovakSolutions\RestSdkBase\Exception\UnAuthorizedException;
-use NovakSolutions\RestSdkBase\Exception\UnknownResponseException;
 use NovakSolutions\RestSdkBase\Model\Model;
-use NovakSolutions\RestSdkBase\Registry;
 use NovakSolutions\RestSdkBase\WebRequesterRegistry;
 use NovakSolutions\RestSdkBase\WebRequestResult;
 
 trait CreateTrait
 {
+    use RestTrait;
     /**
      * @param array $criteria
      * @param null $orderBy
@@ -43,6 +38,11 @@ trait CreateTrait
         /** @var WebRequestResult $result */
 
         $jsonBody = json_encode($data, JSON_PRETTY_PRINT);
+
+        if(static::$saveJsonBody){
+            static::$lastJsonBody = $jsonBody;
+        }
+
         $result = WebRequesterRegistry::getWebRequesterForKey($key)->request($url, 'POST', $jsonBody);
 
         self::throwExceptionIfError($result);
