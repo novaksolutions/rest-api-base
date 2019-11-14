@@ -12,6 +12,7 @@ use JsonMapper;
 use NovakSolutions\RestSdkBase\AssociativeArrayToApiModel;
 use NovakSolutions\RestSdkBase\Exception\FindException;
 use NovakSolutions\RestSdkBase\Exception\BadRequestException;
+use NovakSolutions\RestSdkBase\Exception\NotFoundException;
 use NovakSolutions\RestSdkBase\Exception\UnAuthorizedException;
 use NovakSolutions\RestSdkBase\Exception\UnknownResponseException;
 use NovakSolutions\RestSdkBase\IWebRequester;
@@ -70,6 +71,8 @@ trait ListTrait
         switch($result->responseCode){
             case 596:
                 throw new BadRequestException("Unknown Service");
+            case 404:
+                throw new NotFoundException("Url: " . $url . " Not Found");
             case 401:
                 throw new UnAuthorizedException("Got 401 response from Infusionsoft during call to " . static::$endPoint);
             case 400:

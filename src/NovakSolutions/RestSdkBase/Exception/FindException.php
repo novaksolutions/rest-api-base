@@ -9,7 +9,7 @@
 namespace NovakSolutions\RestSdkBase\Exception;
 
 
-class FindException extends Exception
+class FindException extends RestException
 {
 
     /**

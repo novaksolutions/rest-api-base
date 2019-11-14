@@ -14,10 +14,8 @@ trait SavableTrait
         $primaryKeyFieldName = static::$primaryKeyFieldName;
         if(static::$primaryKeyFieldName != null && $this->$primaryKeyFieldName != null){
             $serviceClassName::update($this);
-            return $this;
         } else {
-            $result = $serviceClassName::create($this);
-            return $result;
+            $serviceClassName::create($this);
         }
     }
 }

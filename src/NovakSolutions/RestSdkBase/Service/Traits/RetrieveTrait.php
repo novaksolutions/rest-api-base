@@ -11,6 +11,7 @@ namespace NovakSolutions\RestSdkBase\Service\Traits;
 use JsonMapper;
 
 use NovakSolutions\RestSdkBase\Exception\BadRequestException;
+use NovakSolutions\RestSdkBase\Exception\NotFoundException;
 use NovakSolutions\RestSdkBase\Exception\UnAuthorizedException;
 use NovakSolutions\RestSdkBase\Exception\UnknownResponseException;
 use NovakSolutions\RestSdkBase\IWebRequester;
@@ -39,7 +40,12 @@ trait RetrieveTrait
         if(strpos(static::$endPoint, "?") !== false){
             $url = str_replace("?",  $id, static::$endPoint);
         } else {
-            $url = static::$endPoint . '/' . $id;
+            if(substr(static::$endPoint, -1) == '/'){
+                $url = static::$endPoint . $id;
+            } else {
+                $url = static::$endPoint . '/' . $id;
+            }
+
         }
 
 //Make Call...
@@ -53,6 +59,8 @@ trait RetrieveTrait
         switch($result->responseCode){
             case 596:
                 throw new BadRequestException("Unknown Service");
+            case 404:
+                throw new NotFoundException("Object or url not found.");
             case 401:
                 throw new UnAuthorizedException("Got 401 response from Infusionsoft during call to " . static::$endPoint);
             case 400:
